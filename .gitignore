@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.DS_Store
+*.log
+
+# Large model files — kept locally only, not pushed to GitHub for now
+claims_probability_model.pkl
+medical_cost_model.pkl

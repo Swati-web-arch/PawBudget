@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAWBUDGET — Pet Financial Risk & Cost Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #6366F1;
+            --primary-subtle: #EEF2FF;
+            --success: #10B981;
+            --success-subtle: #ECFDF5;
+            --warning: #F59E0B;
+            --warning-subtle: #FFFBEB;
+            --danger: #EF4444;
+            --danger-subtle: #FEF2F2;
+            --slate-900: #0F172A;
+            --slate-800: #1E293B;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748B;
+            --slate-400: #94A3B8;
+            --slate-200: #E2E8F0;
+            --slate-100: #F1F5F9;
+            --slate-50: #F8FAFC;
+            --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+            --card-shadow-hover: 0 20px 30px -10px rgba(15, 23, 42, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--slate-800);
+            line-height: 1.5;
+            padding: 24px 16px 48px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .brand-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFFFF;
+            border: 1px solid var(--slate-200);
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            margin-bottom: 12px;
+        }
+
+        .brand-title {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--slate-900);
+            margin-bottom: 8px;
+        }
+
+        .brand-title span {
+            background: linear-gradient(135deg, var(--primary) 0%, #06B6D4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            color: var(--slate-500);
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Grid */
+        .app-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1.35fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 880px) {
+            .app-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background: #FFFFFF;
+            border-radius: 20px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: var(--card-shadow);
+            padding: 28px;
+            transition: all 0.2s ease;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--slate-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin: 20px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Form Controls */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-700);
+            margin-bottom: 6px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--slate-200);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--slate-800);
+            background: #FFFFFF;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            outline: none;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        /* Buttons */
+        .btn-predict {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45);
+        }
+
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+
+        /* Toggle Accordion for Claims */
+        .details-toggle {
+            background: var(--slate-50);
+            border: 1px dashed var(--slate-200);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--slate-600);
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+        }
+
+        .claims-drawer {
+            display: none;
+            padding-top: 12px;
+        }
+
+        .claims-drawer.open {
+            display: block;
+        }
+
+        /* Results Display */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--slate-400);
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.6;
+        }
+
+        .results-container {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Primary Cost Hero Card */
+        .cost-hero {
+            background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+            color: #FFFFFF;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cost-hero::after {
+            content: '🐾';
+            position: absolute;
+            right: 15px;
+            bottom: 5px;
+            font-size: 90px;
+            opacity: 0.08;
+            pointer-events: none;
+        }
+
+        .cost-hero-tag {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #A5B4FC;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .cost-hero-value {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #FFFFFF;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cost-hero-sub {
+            font-size: 13px;
+            color: #C7D2FE;
+            margin-top: 4px;
+        }
+
+        /* Grid of Secondary Metrics */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-tile {
+            background: var(--slate-50);
+            border: 1px solid var(--slate-200);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--slate-500);
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--slate-900);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Risk Badge & Gauge */
+        .risk-card {
+            background: #FFFFFF;
+            border: 1px solid var(--slate-200);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .risk-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+        .badge.HIGH { background: var(--danger-subtle); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge.MODERATE { background: var(--warning-subtle); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge.LOW { background: var(--success-subtle); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .meter-track {
+            height: 8px;
+            background: var(--slate-200);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .meter-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Breakdown Bars */
+        .breakdown-box {
+            margin-bottom: 20px;
+        }
+
+        .breakdown-item {
+            margin-bottom: 10px;
+        }
+
+        .breakdown-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .breakdown-info .name { font-weight: 600; color: var(--slate-700); }
+        .breakdown-info .val { font-weight: 700; color: var(--slate-900); font-family: 'JetBrains Mono', monospace; }
+
+        .breakdown-bar {
+            height: 6px;
+            background: var(--slate-100);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .breakdown-fill {
+            height: 100%;
+            border-radius: 6px;
+        }
+
+        /* Scenario Table */
+        .scenario-box table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .scenario-box th, .scenario-box td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--slate-100);
+        }
+
+        .scenario-box th {
+            background: var(--slate-50);
+            color: var(--slate-600);
+            font-weight: 600;
+        }
+
+        .scenario-box td.cost-col {
+            font-weight: 700;
+            color: var(--slate-900);
+            font-family: 'JetBrains Mono', monospace;
+            text-align: right;
+        }
+
+        .badge-pill {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: var(--slate-100);
+            color: var(--slate-600);
+            font-weight: 600;
+        }
+
+        /* Error alert */
+        .alert-error {
+            background: var(--danger-subtle);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="brand-pill">
+            <span>🐾</span> PawBudget ML Engine v2.0
+        </div>
+        <h1 class="brand-title">Pet Ownership <span>Cost & Risk Predictor</span></h1>
+        <p class="brand-subtitle">
+            Combines veterinary clinical models, base ownership algorithms, and insurance claim forecasting to give you a full 360° financial projection.
+        </p>
+    </header>
+
+    <div class="app-grid">
+        <!-- Input Form Column -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🐶 Pet & Policy Profile</h2>
+                <span class="badge-pill">7 Parameters</span>
+            </div>
+
+            <form id="calcForm">
+                <div class="section-label">Pet Characteristics</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="species">Species</label>
+                        <select id="species" onchange="filterBreedsBySpecies()">
+                            <option value="Dog" selected>Dog 🐕</option>
+                            <option value="Cat">Cat 🐈</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="breed_size">Breed Size</label>
+                        <select id="breed_size">
+                            <option value="Small">Small (&lt;10 kg)</option>
+                            <option value="Medium">Medium (10–25 kg)</option>
+                            <option value="Large" selected>Large (25–45 kg)</option>
+                            <option value="Extra Large">Extra Large (&gt;45 kg)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="breed">Breed</label>
+                    <select id="breed">
+                        <option value="Unknown" selected>Loading Breeds...</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age">Pet Age (Years)</label>
+                        <input type="number" id="age" value="2" min="1" max="20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <select id="location">
+                            <option value="Urban" selected>Urban</option>
+                            <option value="Semi-Urban">Semi-Urban</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="section-label">🛡️ Insurance & Coverage</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="premium">Annual Premium (₹)</label>
+                        <input type="number" id="premium" value="6500" min="0" step="500" placeholder="e.g. 6500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deductible">Deductible (₹)</label>
+                        <input type="number" id="deductible" value="3000" min="0" step="500" placeholder="e.g. 3000">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="enroll_path">Enrollment Method</label>
+                    <select id="enroll_path">
+                        <option value="Online" selected>Online / Web</option>
+                        <option value="Veterinarian">Veterinarian Recommendation</option>
+                        <option value="Employer">Employer Benefits (EB)</option>
+                        <option value="Unknown">Other / Direct</option>
+                    </select>
+                </div>
+
+                <!-- Prior Claims Accordion -->
+                <div class="details-toggle" onclick="toggleClaimsDrawer()">
+                    <span>⚙️ Existing Pet Claims History (Optional)</span>
+                    <span id="drawerArrow">▼</span>
+                </div>
+
+                <div class="claims-drawer" id="claimsDrawer">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="prev_claim_count">Past Claims Count</label>
+                            <input type="number" id="prev_claim_count" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="prev_total_claim_amount">Past Total Claims (₹)</label>
+                            <input type="number" id="prev_total_claim_amount" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-predict" onclick="calculateCost()">
+                    <span>⚡</span> GENERATE PAWBUDGET FORECAST
+                </button>
+
+                <div id="alertBox" class="alert-error"></div>
+            </form>
+        </div>
+
+        <!-- Output Forecast Column -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📊 Financial Forecast</h2>
+                <span id="calcStatus" class="badge-pill">Awaiting Input</span>
+            </div>
+
+            <!-- Empty Placeholder -->
+            <div id="emptyPlaceholder" class="empty-state">
+                <div class="empty-icon">📈</div>
+                <h3>Ready to Calculate</h3>
+                <p>Configure your pet's profile on the left and hit <strong>Generate</strong> to view the combined budget breakdown.</p>
+            </div>
+
+            <!-- Results Content -->
+            <div id="resultsContent" class="results-container">
+                <!-- Hero Primary Cost -->
+                <div class="cost-hero">
+                    <div class="cost-hero-tag">Total Estimated Annual PawBudget</div>
+                    <div class="cost-hero-value" id="combinedCost">₹0</div>
+                    <div class="cost-hero-sub">Includes routine ownership expenses + predicted medical claim buffer</div>
+                </div>
+
+                <!-- Financial Risk Score Meter -->
+                <div class="risk-card">
+                    <div class="risk-header">
+                        <div>
+                            <span style="font-size: 13px; font-weight: 600; color: var(--slate-600);">Financial Risk Assessment</span>
+                            <div style="font-size: 18px; font-weight: 800; color: var(--slate-900); margin-top: 2px;">
+                                Score: <span id="riskScore">0</span>/100
+                            </div>
+                        </div>
+                        <span id="riskBadge" class="badge LOW">LOW RISK</span>
+                    </div>
+                    <div class="meter-track">
+                        <div id="meterFill" class="meter-fill" style="width: 25%; background: var(--success);"></div>
+                    </div>
+                </div>
+
+                <!-- Secondary Split Metrics -->
+                <div class="metrics-row">
+                    <div class="metric-tile">
+                        <div class="metric-label">🏥 Claim Probability</div>
+                        <div class="metric-value" id="claimProb">0%</div>
+                    </div>
+                    <div class="metric-tile">
+                        <div class="metric-label">💊 Expected Medical Risk</div>
+                        <div class="metric-value" id="medicalExpense">₹0</div>
+                    </div>
+                </div>
+
+                <!-- Breakdown Bars -->
+                <div class="breakdown-box">
+                    <div class="section-label">Routine Care Cost Drivers</div>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-info">
+                            <span class="name">🍖 Nutrition & Food (55%)</span>
+                            <span class="val" id="foodCost">₹0</span>
+                        </div>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" style="width: 55%; background: #6366F1;"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-info">
+                            <span class="name">💉 Preventive & Vaccines (25%)</span>
+                            <span class="val" id="prevCost">₹0</span>
+                        </div>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" style="width: 25%; background: #10B981;"></div>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-item">
+                        <div class="breakdown-info">
+                            <span class="name">✂️ Grooming & Hygiene (20%)</span>
+                            <span class="val" id="groomCost">₹0</span>
+                        </div>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" style="width: 20%; background: #F59E0B;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scenario Simulator -->
+                <div class="scenario-box">
+                    <div class="section-label">Annual Scenario Simulator</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th style="text-align: right;">Estimated Budget</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Routine / Standard Year</td>
+                                <td class="cost-col" id="scenRoutine">₹0</td>
+                            </tr>
+                            <tr>
+                                <td>Chronic Health Episode (+35%)</td>
+                                <td class="cost-col" id="scenChronic" style="color: var(--warning);">₹0</td>
+                            </tr>
+                            <tr>
+                                <td>Major Medical Emergency (+75%)</td>
+                                <td class="cost-col" id="scenEmerg" style="color: var(--danger);">₹0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let allBreeds = [];
+
+    async function loadBreeds() {
+        try {
+            const res = await fetch('/breeds');
+            allBreeds = await res.json();
+            populateBreedOptions(allBreeds);
+        } catch (e) {
+            console.error('Error fetching breeds:', e);
+            populateBreedOptions(['Labrador Retriever', 'German Shepherd', 'Golden Retriever', 'Beagle', 'Persian Cat', 'Siamese Cat', 'Unknown']);
+        }
+    }
+
+    function populateBreedOptions(breedsList) {
+        const breedSelect = document.getElementById('breed');
+        breedSelect.innerHTML = '';
+        
+        const unknownOpt = document.createElement('option');
+        unknownOpt.value = 'Unknown';
+        unknownOpt.textContent = 'Mixed / Unknown Breed';
+        breedSelect.appendChild(unknownOpt);
+
+        breedsList.forEach(b => {
+            if (b !== 'Unknown') {
+                const opt = document.createElement('option');
+                opt.value = b;
+                opt.textContent = b;
+                breedSelect.appendChild(opt);
+            }
+        });
+    }
+
+    function filterBreedsBySpecies() {
+        // Can optionally filter or retain all
+    }
+
+    function toggleClaimsDrawer() {
+        const drawer = document.getElementById('claimsDrawer');
+        const arrow = document.getElementById('drawerArrow');
+        drawer.classList.toggle('open');
+        arrow.textContent = drawer.classList.contains('open') ? '▲' : '▼';
+    }
+
+    function formatINR(val) {
+        return '₹' + Number(val || 0).toLocaleString('en-IN');
+    }
+
+    async function calculateCost() {
+        const alertBox = document.getElementById('alertBox');
+        alertBox.style.display = 'none';
+
+        const payload = {
+            species: document.getElementById('species').value,
+            breed_size: document.getElementById('breed_size').value,
+            age: parseInt(document.getElementById('age').value, 10) || 2,
+            location: document.getElementById('location').value,
+            breed: document.getElementById('breed').value,
+            premium: parseFloat(document.getElementById('premium').value) || 0,
+            deductible: parseFloat(document.getElementById('deductible').value) || 0,
+            enroll_path: document.getElementById('enroll_path').value,
+            prev_claim_count: parseInt(document.getElementById('prev_claim_count').value, 10) || 0,
+            prev_total_claim_amount: parseFloat(document.getElementById('prev_total_claim_amount').value) || 0,
+            prev_avg_claim_amount: 0,
+            prev_max_claim_amount: 0,
+            prev_claimed_days: 0
+        };
+
+        try {
+            const btn = document.querySelector('.btn-predict');
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span> Calculating ML Forecast...';
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error('Server returned prediction error');
+            }
+
+            const data = await response.json();
+
+            // Populate Metrics
+            document.getElementById('combinedCost').textContent = formatINR(data.combined_cost);
+            document.getElementById('riskScore').textContent = data.financial_risk_score;
+            document.getElementById('claimProb').textContent = data.claim_probability + '%';
+            document.getElementById('medicalExpense').textContent = formatINR(data.expected_medical_cost);
+
+            // Risk Tier & Meter Bar
+            const badge = document.getElementById('riskBadge');
+            const meter = document.getElementById('meterFill');
+            badge.textContent = data.financial_risk + ' RISK';
+            badge.className = 'badge ' + data.financial_risk;
+
+            meter.style.width = Math.min(100, Math.max(8, data.financial_risk_score)) + '%';
+            if (data.financial_risk === 'HIGH') {
+                meter.style.background = 'var(--danger)';
+            } else if (data.financial_risk === 'MODERATE') {
+                meter.style.background = 'var(--warning)';
+            } else {
+                meter.style.background = 'var(--success)';
+            }
+
+            // Routine Care Breakdown
+            document.getElementById('foodCost').textContent = formatINR(data.breakdown.food);
+            document.getElementById('prevCost').textContent = formatINR(data.breakdown.preventive);
+            document.getElementById('groomCost').textContent = formatINR(data.breakdown.grooming);
+
+            // Scenarios
+            document.getElementById('scenRoutine').textContent = formatINR(data.scenarios.routine);
+            document.getElementById('scenChronic').textContent = formatINR(data.scenarios.chronic);
+            document.getElementById('scenEmerg').textContent = formatINR(data.scenarios.emergency);
+
+            // Toggle view
+            document.getElementById('emptyPlaceholder').style.display = 'none';
+            document.getElementById('resultsContent').style.display = 'block';
+            document.getElementById('calcStatus').textContent = 'Calculated ✓';
+            document.getElementById('calcStatus').style.color = 'var(--success)';
+
+        } catch (err) {
+            console.error('Prediction failed:', err);
+            alertBox.textContent = 'Unable to compute forecast. Ensure the Flask server is running.';
+            alertBox.style.display = 'block';
+        } finally {
+            const btn = document.querySelector('.btn-predict');
+            btn.disabled = false;
+            btn.innerHTML = '<span>⚡</span> GENERATE PAWBUDGET FORECAST';
+        }
+    }
+
+    // Initialize
+    loadBreeds();
+</script>
+
+</body>
+</html>

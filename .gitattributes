@@ -1,2 +1,0 @@
-claims_probability_model.pkl filter=lfs diff=lfs merge=lfs -text
-medical_cost_model.pkl filter=lfs diff=lfs merge=lfs -text

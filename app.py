@@ -49,9 +49,17 @@ with open(os.path.join(base_dir, 'encoders.pkl'), 'rb') as f:
 # -----------------------------
 # Load Claims / Medical Cost Models
 # -----------------------------
-claims_probability_model = joblib.load(
-    os.path.join(base_dir, 'claims_probability_model.pkl')
+from huggingface_hub import hf_hub_download
+
+model_path = hf_hub_download(
+    repo_id="swatiyadav123/PawBudget",
+    filename="claims_probability_model.pkl",
+    repo_type="model"
 )
+
+claims_probability_model = joblib.load(model_path)
+
+claims_probability_model = joblib.load(model_path)
 
 medical_cost_model = joblib.load(
     os.path.join(base_dir, 'medical_cost_model.pkl')
@@ -255,4 +263,4 @@ def predict():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     print(f"🐾 PawBudget engine running on http://127.0.0.1:{port}")
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)

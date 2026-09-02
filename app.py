@@ -49,6 +49,9 @@ with open(os.path.join(base_dir, 'encoders.pkl'), 'rb') as f:
 # -----------------------------
 # Load Claims / Medical Cost Models
 # -----------------------------
+# -----------------------------
+# Load Claims Probability Model from Hugging Face
+# -----------------------------
 from huggingface_hub import hf_hub_download
 
 model_path = hf_hub_download(
@@ -58,9 +61,6 @@ model_path = hf_hub_download(
 )
 
 claims_probability_model = joblib.load(model_path)
-
-claims_probability_model = joblib.load(model_path)
-
 medical_cost_model = joblib.load(
     os.path.join(base_dir, 'medical_cost_model.pkl')
 )
